@@ -14,7 +14,6 @@
     [super awakeFromNib];
     // Initialization code
     
-    self.isFavorite = false;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -23,15 +22,28 @@
     // Configure the view for the selected state
 }
 
-- (void) isFavoriteChanged{
-    NSString *imageName = self.isFavorite ? @"isFavorite" : @"favorite";
+- (void) configureCell:(History *)history{
+    self.history = history;
+    
+    self.titleLabel.text = history.startupName;
+    [self updateFavoriteButton];
+}
+
+- (void) updateFavoriteButton {
+    NSString *imageName = self.history.isFavorite ? @"isFavorite" : @"favorite";
     [self.favoriteButton setImage:[UIImage imageNamed: imageName] forState: UIControlStateNormal];
+}
+
+- (void) isFavoriteChanged{
+    
+    [self updateFavoriteButton];
+    [self.delegate historyFavoriteChanged: self.history];
 }
 
 - (IBAction)favoriteButtonTapped:(UIButton *)sender {
     NSLog(@"tocou no botão");
     
-    self.isFavorite = !self.isFavorite;
+    self.history.isFavorite = !self.history.isFavorite;
     
     [self isFavoriteChanged];
 }

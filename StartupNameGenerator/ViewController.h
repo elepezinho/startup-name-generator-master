@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
+#import "StartupCell.h"
 
-@interface ViewController : UIViewController<UITableViewDataSource, NSFetchedResultsControllerDelegate>
+@interface ViewController : UIViewController<UITableViewDataSource, NSFetchedResultsControllerDelegate,StartupCellDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *inputTextField;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;

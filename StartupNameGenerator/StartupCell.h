@@ -7,14 +7,24 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "History+CoreDataClass.h"
+
+@protocol StartupCellDelegate <NSObject>
+
+- (void) historyFavoriteChanged:(History *)history;
+
+@end
 
 @interface StartupCell : UITableViewCell
+
+@property (weak, nonatomic) id <StartupCellDelegate> delegate;
+
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
-
-
 @property (weak, nonatomic) IBOutlet UIButton *favoriteButton;
 
-@property (assign) BOOL isFavorite;
+@property(strong, nonatomic) History *history;
+
+- (void) configureCell:(History *)history;
 
 - (IBAction)favoriteButtonTapped:(UIButton *)sender;
 

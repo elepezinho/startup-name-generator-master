@@ -11,7 +11,7 @@
 #import "Keyword+CoreDataClass.h"
 #import "History+CoreDataClass.h"
 #import <Toast/UIView+Toast.h>
-#import "StartupCell.h"
+
 
 typedef enum {
     WordPrefix = 1,
@@ -149,9 +149,10 @@ static NSString * const CellIdentifier = @"AtividadesCell";
 
 #pragma mark - Utils
 - (void)configureCell:(StartupCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    cell.delegate = self;
     History *history = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
-    cell.titleLabel.text = history.startupName;
+    [cell configureCell: history];
 }
 
 - (BOOL)hasAnyWord {
@@ -411,6 +412,12 @@ static NSString * const CellIdentifier = @"AtividadesCell";
     if ( lastGenerationRunAt )
         lastGenerationRunAt = lastGenerationRunAt;
     lastGenerationRunAt = [NSDate date];
+}
+
+#pragma mark - StartupCelldelegate
+-(void)historyFavoriteChanged:(History *)history{
+    NSLog(@"View Controler Is Favorite: %d", history.isFavorite);
+
 }
 
 @end
