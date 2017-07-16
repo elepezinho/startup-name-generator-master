@@ -212,6 +212,16 @@ static NSString * const CellIdentifier = @"AtividadesCell";
                    style:toastStyle];
 }
 
+- (void)showFavoriteToast:(NSString *)message {
+    CSToastStyle *toastStyle = [[CSToastStyle alloc] initWithDefaultStyle];
+    toastStyle.backgroundColor = UIColor.orangeColor;
+    
+    [self.view makeToast:message
+                duration:[CSToastManager defaultDuration]
+                position:[CSToastManager defaultPosition]
+                   style:toastStyle];
+}
+
 #pragma mark - Persistence methods
 - (void)createHistoryWithStartupName:(NSString *)startupName {
     AppDelegate *appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
@@ -221,6 +231,7 @@ static NSString * const CellIdentifier = @"AtividadesCell";
                                                      inManagedObjectContext:context];
     history.startupName = startupName;
     history.createdAt = [NSDate date];
+    history.isFavorite = false;
 }
 
 - (void)deleteAllHistory {
@@ -235,7 +246,9 @@ static NSString * const CellIdentifier = @"AtividadesCell";
         NSLog(@"Erro ao obter históricos");
 
     for (History *history in historyList) {
+        if (!history.isFavorite){
         [context deleteObject:history];
+        }
     }
 }
 
@@ -416,7 +429,8 @@ static NSString * const CellIdentifier = @"AtividadesCell";
 
 #pragma mark - StartupCelldelegate
 -(void)historyFavoriteChanged:(History *)history{
-    NSLog(@"View Controler Is Favorite: %d", history.isFavorite);
+    NSString *actionName = history.isFavorite ? @"Adicionou" : @"Removeu";
+    [self showFavoriteToast:[NSString stringWithFormat:@"%@ favorito: %@", actionName, history.startupName]];
 
 }
 
