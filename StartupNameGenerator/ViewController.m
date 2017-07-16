@@ -12,7 +12,6 @@
 #import "History+CoreDataClass.h"
 #import <Toast/UIView+Toast.h>
 
-
 typedef enum {
     WordPrefix = 1,
     WordSuffix,
@@ -31,7 +30,7 @@ static NSString * const CellIdentifier = @"AtividadesCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     NSError *error;
     if ( ![self.fetchedResultsController performFetch:&error] ) {
         NSLog(@"Erro ao obter histórico. ERRO: %@, %@", error, [error userInfo]);
@@ -46,11 +45,11 @@ static NSString * const CellIdentifier = @"AtividadesCell";
 #pragma mark - Action methods
 - (IBAction)generateButtonTapped:(id)sender {
     NSString *inputText = [self.inputTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-
+    
     if ( inputText && inputText.length > 0 ) {
         self.words = [inputText componentsSeparatedByString:@" "];
         [self generateStartupNames];
-
+        
     } else {
         [self showErrorToast:@"Digite ao menos uma palavra"];
     }
@@ -64,23 +63,29 @@ static NSString * const CellIdentifier = @"AtividadesCell";
 - (void)generateStartupNames {
     if ( ![self hasAnyWord] )
         return;
-
+    
     self.lastGenerationRunAt = [NSDate date];
-
-    [self createHistoryWithStartupName:[self generateNameWithWordPrefix]];
-    [self createHistoryWithStartupName:[self generateNameWithWordPrefix]];
-    [self createHistoryWithStartupName:[self generateNameWithWordSuffix]];
-    [self createHistoryWithStartupName:[self generateNameWithPartialSuffix]];
-    [self createHistoryWithStartupName:[self generateNameWithPartialSuffix]];
-    [self createHistoryWithStartupName:[self generateNameWithPartialSuffix]];
-    [self createHistoryWithStartupName:[self generateNameWithMixedWords]];
-    [self createHistoryWithStartupName:[self generateNameWithMixedWords]];
-    [self createHistoryWithStartupName:[self generateNameWithMixedWords]];
-    [self createHistoryWithStartupName:[self generateCrazyName]];
-
+    
+    int newAddedNames = 0;
+    
+    if ([self createHistoryWithStartupName:[self generateNameWithWordPrefix]]) newAddedNames++;
+    if ([self createHistoryWithStartupName:[self generateNameWithWordPrefix]]) newAddedNames++;
+    if ([self createHistoryWithStartupName:[self generateNameWithWordSuffix]]) newAddedNames++;
+    if ([self createHistoryWithStartupName:[self generateNameWithPartialSuffix]]) newAddedNames++;
+    if ([self createHistoryWithStartupName:[self generateNameWithPartialSuffix]]) newAddedNames++;
+    if ([self createHistoryWithStartupName:[self generateNameWithPartialSuffix]]) newAddedNames++;
+    if ([self createHistoryWithStartupName:[self generateNameWithMixedWords]]) newAddedNames++;
+    if ([self createHistoryWithStartupName:[self generateNameWithMixedWords]]) newAddedNames++;
+    if ([self createHistoryWithStartupName:[self generateNameWithMixedWords]]) newAddedNames++;
+    if ([self createHistoryWithStartupName:[self generateCrazyName]]) newAddedNames++;
+    
+    if (newAddedNames < 1) {
+        [self showEndListToast];
+    }
+    
     AppDelegate *appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
     NSManagedObjectContext *context = appDelegate.persistentContainer.viewContext;
-
+    
     NSError *error = nil;
     if ( ![context save:&error] )
         NSLog(@"Erro ao salvar históricos. ERROR %@", error.debugDescription);
@@ -89,57 +94,55 @@ static NSString * const CellIdentifier = @"AtividadesCell";
 - (nonnull NSString *)generateNameWithWordPrefix {
     NSString *word = [self randomWord];
     NSString *prefix = [self randomWordPrefix];
-
+    
     return [NSString stringWithFormat:@"%@ %@", prefix, word];
 }
 
 - (nonnull NSString *)generateNameWithWordSuffix {
     NSString *word = [self randomWord];
     NSString *suffix = [self randomWordSuffix];
-
+    
     return [NSString stringWithFormat:@"%@ %@", word, suffix];
 }
 
 - (nonnull NSString *)generateNameWithPartialSuffix {
     NSString *word = [self randomWord];
     NSString *suffix = [self randomPartialSuffix];
-
+    
     return [word stringByAppendingString:suffix];
 }
 
 - (NSString *)generateNameWithMixedWords {
     NSString *word = [self randomWord];
     NSString *suffix = [self randomWordToMix];
-
+    
     NSString *firstWord = [word substringToIndex:word.length-2];
     NSString *secondWord = [suffix substringFromIndex:1];
-
+    
     return [firstWord stringByAppendingString:secondWord];
 }
 
 - (NSString *)generateCrazyName {
     if ( ![self hasAnyWord] )
         return nil;
-
+    
     NSString *word = [self randomWord];
     NSString *suffix = [self randomPartialSuffix];
-
+    
     NSCharacterSet *vowelCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"aáãeêéiíoõuy"];
     NSString *unvowelWord = [[word componentsSeparatedByCharactersInSet:vowelCharacterSet] componentsJoinedByString:@""];
-
+    
     return [unvowelWord stringByAppendingString:suffix];
 }
 
 #pragma mark - UITableViewDataSource methods
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    static NSString *CellIdentifier = @"startupNameCell";
-   // UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
-    StartupCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-
+    static NSString *CellIdentifier = @"startupNameCell";
+    StartupCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
     [self configureCell:cell atIndexPath:indexPath];
-
+    
     return cell;
 }
 
@@ -150,8 +153,8 @@ static NSString * const CellIdentifier = @"AtividadesCell";
 #pragma mark - Utils
 - (void)configureCell:(StartupCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     cell.delegate = self;
-    History *history = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
+    History *history = [self.fetchedResultsController objectAtIndexPath:indexPath];
     [cell configureCell: history];
 }
 
@@ -202,19 +205,9 @@ static NSString * const CellIdentifier = @"AtividadesCell";
     return (NSUInteger) arc4random_uniform((uint32_t) max);
 }
 
-- (void)showErrorToast:(NSString *)message {
+- (void)showMessageToast:(NSString *)message backgroundColor:(UIColor *)backgroundColor {
     CSToastStyle *toastStyle = [[CSToastStyle alloc] initWithDefaultStyle];
-    toastStyle.backgroundColor = UIColor.redColor;
-
-    [self.view makeToast:message
-                duration:[CSToastManager defaultDuration]
-                position:[CSToastManager defaultPosition]
-                   style:toastStyle];
-}
-
-- (void)showFavoriteToast:(NSString *)message {
-    CSToastStyle *toastStyle = [[CSToastStyle alloc] initWithDefaultStyle];
-    toastStyle.backgroundColor = UIColor.orangeColor;
+    toastStyle.backgroundColor = backgroundColor;
     
     [self.view makeToast:message
                 duration:[CSToastManager defaultDuration]
@@ -222,32 +215,52 @@ static NSString * const CellIdentifier = @"AtividadesCell";
                    style:toastStyle];
 }
 
+- (void)showErrorToast:(NSString *)message {
+    [self showMessageToast:message backgroundColor: UIColor.redColor];
+}
+
+- (void)showFavoriteToast:(NSString *)message {
+    [self showMessageToast:message backgroundColor: UIColor.orangeColor];
+}
+
+- (void)showEndListToast {
+    [self showMessageToast:@"Palavras finalizadas." backgroundColor: UIColor.blueColor];
+}
+
 #pragma mark - Persistence methods
-- (void)createHistoryWithStartupName:(NSString *)startupName {
+- (BOOL)createHistoryWithStartupName:(NSString *)startupName {
     AppDelegate *appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
     NSManagedObjectContext *context = appDelegate.persistentContainer.viewContext;
-
+    
+    for (History *history in self.fetchedResultsController.fetchedObjects) {
+        if ([startupName isEqualToString: history.startupName]) {
+            return false;
+        }
+    }
+    
     History *history = [NSEntityDescription insertNewObjectForEntityForName:@"History"
                                                      inManagedObjectContext:context];
     history.startupName = startupName;
     history.createdAt = [NSDate date];
     history.isFavorite = false;
+    
+    return true;
 }
 
 - (void)deleteAllHistory {
     AppDelegate *appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
     NSManagedObjectContext *context = appDelegate.persistentContainer.viewContext;
-
+    
     NSFetchRequest *fetchRequest = [History fetchRequest];
     NSError *error = nil;
     NSArray *historyList = [context executeFetchRequest:fetchRequest error:&error];
-
+    
     if ( error )
         NSLog(@"Erro ao obter históricos");
-
+    
     for (History *history in historyList) {
-        if (!history.isFavorite){
-        [context deleteObject:history];
+        if (!history.isFavorite) {
+            [context deleteObject:history];
         }
     }
 }
@@ -255,76 +268,76 @@ static NSString * const CellIdentifier = @"AtividadesCell";
 - (NSArray *)findWordPrefixes {
     AppDelegate *appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
     NSManagedObjectContext *context = appDelegate.persistentContainer.viewContext;
-
+    
     NSFetchRequest *fetchRequest = [Keyword fetchRequest];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"type == %@", @(WordPrefix)];
-
+    
     NSError *error = nil;
     NSArray *keywords = [context executeFetchRequest:fetchRequest error:&error];
-
+    
     if ( error )
         NSLog(@"Erro ao obter palavras-chave do tipo %d", WordPrefix);
-
+    
     if ( !keywords )
         return [NSArray new];
-
+    
     return keywords;
 }
 
 - (NSArray *)findWordSuffixes {
     AppDelegate *appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
     NSManagedObjectContext *context = appDelegate.persistentContainer.viewContext;
-
+    
     NSFetchRequest *fetchRequest = [Keyword fetchRequest];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"type == %@", @(WordSuffix)];
-
+    
     NSError *error = nil;
     NSArray *keywords = [context executeFetchRequest:fetchRequest error:&error];
-
+    
     if ( error )
         NSLog(@"Erro ao obter palavras-chave do tipo %d", WordSuffix);
-
+    
     if ( !keywords )
         return [NSArray new];
-
+    
     return keywords;
 }
 
 - (NSArray *)findPartialSuffixes {
     AppDelegate *appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
     NSManagedObjectContext *context = appDelegate.persistentContainer.viewContext;
-
+    
     NSFetchRequest *fetchRequest = [Keyword fetchRequest];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"type == %@", @(PartialSuffix)];
-
+    
     NSError *error = nil;
     NSArray *keywords = [context executeFetchRequest:fetchRequest error:&error];
-
+    
     if ( error )
         NSLog(@"Erro ao obter palavras-chave do tipo %d", PartialSuffix);
-
+    
     if ( !keywords )
         return [NSArray new];
-
+    
     return keywords;
 }
 
 - (NSArray *)findWordPrefixesAndSuffixes {
     AppDelegate *appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
     NSManagedObjectContext *context = appDelegate.persistentContainer.viewContext;
-
+    
     NSFetchRequest *fetchRequest = [Keyword fetchRequest];
     fetchRequest.predicate = [NSPredicate predicateWithFormat:@"type == %@ OR type == %@", @(WordPrefix), @(WordSuffix)];
-
+    
     NSError *error = nil;
     NSArray *keywords = [context executeFetchRequest:fetchRequest error:&error];
-
+    
     if ( error )
         NSLog(@"Erro ao obter palavras-chave dos tipos %d e %d", WordPrefix, WordSuffix);
-
+    
     if ( !keywords )
         return [NSArray new];
-
+    
     return keywords;
 }
 
@@ -338,23 +351,23 @@ static NSString * const CellIdentifier = @"AtividadesCell";
        atIndexPath:(NSIndexPath *)indexPath
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath {
-
+    
     UITableView *tableView = self.tableView;
-
+    
     switch(type) {
-
+            
         case NSFetchedResultsChangeInsert:
             [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
-
+            
         case NSFetchedResultsChangeDelete:
             [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
-
+            
         case NSFetchedResultsChangeUpdate:
             [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
             break;
-
+            
         case NSFetchedResultsChangeMove:
             [tableView deleteRowsAtIndexPaths:[NSArray
                                                arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -369,17 +382,17 @@ static NSString * const CellIdentifier = @"AtividadesCell";
   didChangeSection:(id )sectionInfo
            atIndex:(NSUInteger)sectionIndex
      forChangeType:(NSFetchedResultsChangeType)type {
-
+    
     switch(type) {
-
+            
         case NSFetchedResultsChangeInsert:
             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
-
+            
         case NSFetchedResultsChangeDelete:
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
-
+            
         default:
             break;
     }
@@ -392,19 +405,19 @@ static NSString * const CellIdentifier = @"AtividadesCell";
 
 #pragma mark - Getters & setters
 - (NSFetchedResultsController *)fetchedResultsController {
-
+    
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
     }
-
+    
     AppDelegate *appDelegate = (AppDelegate *) [UIApplication sharedApplication].delegate;
     NSManagedObjectContext *context = appDelegate.persistentContainer.viewContext;
-
+    
     NSFetchRequest *fetchRequest = [History fetchRequest];
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:NO];
     fetchRequest.sortDescriptors = @[sortDescriptor];
     fetchRequest.fetchBatchSize = 20;
-
+    
     NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                                                managedObjectContext:context
                                                                                                  sectionNameKeyPath:nil
@@ -427,11 +440,10 @@ static NSString * const CellIdentifier = @"AtividadesCell";
     lastGenerationRunAt = [NSDate date];
 }
 
-#pragma mark - StartupCelldelegate
--(void)historyFavoriteChanged:(History *)history{
+#pragma mark - StartupCellDelegate
+- (void)historyFavoriteChanged:(History *)history {
     NSString *actionName = history.isFavorite ? @"Adicionou" : @"Removeu";
-    [self showFavoriteToast:[NSString stringWithFormat:@"%@ favorito: %@", actionName, history.startupName]];
-
+    [self showFavoriteToast: [NSString stringWithFormat:@"%@ favorito: %@", actionName, history.startupName]];
 }
 
 @end
