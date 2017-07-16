@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		24C49E2EFCE9015AF1037A53 /* libPods-StartupNameGenerator.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A74B25ABCF5EB0461AA2971 /* libPods-StartupNameGenerator.a */; };
+		6F6D62151F1BE41800082340 /* StartupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6D62141F1BE41800082340 /* StartupCell.m */; };
 		7F0FA9041EAFC79600778B00 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F0FA9031EAFC79600778B00 /* main.m */; };
 		7F0FA9071EAFC79600778B00 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F0FA9061EAFC79600778B00 /* AppDelegate.m */; };
 		7F0FA90A1EAFC79600778B00 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F0FA9091EAFC79600778B00 /* ViewController.m */; };
@@ -40,6 +41,8 @@
 /* Begin PBXFileReference section */
 		3157A49361E7EDC0E2C2C7C9 /* Pods-StartupNameGenerator.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StartupNameGenerator.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-StartupNameGenerator/Pods-StartupNameGenerator.debug.xcconfig"; sourceTree = "<group>"; };
 		5A74B25ABCF5EB0461AA2971 /* libPods-StartupNameGenerator.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-StartupNameGenerator.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6F6D62131F1BE41800082340 /* StartupCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StartupCell.h; sourceTree = "<group>"; };
+		6F6D62141F1BE41800082340 /* StartupCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StartupCell.m; sourceTree = "<group>"; };
 		7F0FA8FF1EAFC79600778B00 /* StartupNameGenerator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StartupNameGenerator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F0FA9031EAFC79600778B00 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7F0FA9051EAFC79600778B00 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -136,6 +139,8 @@
 				7F0FA9111EAFC79600778B00 /* Assets.xcassets */,
 				7F0FA9161EAFC79600778B00 /* Info.plist */,
 				7F0FA9131EAFC79600778B00 /* LaunchScreen.storyboard */,
+				6F6D62131F1BE41800082340 /* StartupCell.h */,
+				6F6D62141F1BE41800082340 /* StartupCell.m */,
 				7F0FA90B1EAFC79600778B00 /* Main.storyboard */,
 				7F0FA9081EAFC79600778B00 /* ViewController.h */,
 				7F0FA9091EAFC79600778B00 /* ViewController.m */,
@@ -381,6 +386,7 @@
 			files = (
 				7F0FA9101EAFC79600778B00 /* StartupNameGenerator.xcdatamodeld in Sources */,
 				7F0FA90A1EAFC79600778B00 /* ViewController.m in Sources */,
+				6F6D62151F1BE41800082340 /* StartupCell.m in Sources */,
 				7F0FA9071EAFC79600778B00 /* AppDelegate.m in Sources */,
 				7F0FA9041EAFC79600778B00 /* main.m in Sources */,
 			);

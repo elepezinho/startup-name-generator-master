@@ -11,6 +11,7 @@
 #import "Keyword+CoreDataClass.h"
 #import "History+CoreDataClass.h"
 #import <Toast/UIView+Toast.h>
+#import "StartupCell.h"
 
 typedef enum {
     WordPrefix = 1,
@@ -133,7 +134,9 @@ static NSString * const CellIdentifier = @"AtividadesCell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     static NSString *CellIdentifier = @"startupNameCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+   // UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    StartupCell* cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 
     [self configureCell:cell atIndexPath:indexPath];
 
@@ -145,9 +148,10 @@ static NSString * const CellIdentifier = @"AtividadesCell";
 }
 
 #pragma mark - Utils
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+- (void)configureCell:(StartupCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     History *history = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = history.startupName;
+    
+    cell.titleLabel.text = history.startupName;
 }
 
 - (BOOL)hasAnyWord {

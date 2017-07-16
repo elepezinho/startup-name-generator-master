@@ -123,7 +123,7 @@
                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <color key="sectionIndexBackgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <prototypes>
-                                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="startupNameCell" textLabel="KaY-Gy-ujO" style="IBUITableViewCellStyleDefault" id="hnt-a0-4OK">
+                                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="startupNameCell" textLabel="KaY-Gy-ujO" style="IBUITableViewCellStyleDefault" id="hnt-a0-4OK" customClass="StartupCell">
                                                 <rect key="frame" x="0.0" y="22" width="375" height="44"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="hnt-a0-4OK" id="P2n-h2-o6z">
@@ -143,9 +143,16 @@
                                                             <state key="normal" image="favorite"/>
                                                             <state key="disabled" image="favorite"/>
                                                             <state key="selected" image="favorite_tapped"/>
+                                                            <connections>
+                                                                <action selector="favoriteButtonTapped:" destination="hnt-a0-4OK" eventType="touchUpInside" id="r9g-CU-chw"/>
+                                                            </connections>
                                                         </button>
                                                     </subviews>
                                                 </tableViewCellContentView>
+                                                <connections>
+                                                    <outlet property="favoriteButton" destination="72i-34-N94" id="Ev5-ib-g9Y"/>
+                                                    <outlet property="titleLabel" destination="KaY-Gy-ujO" id="PWL-m4-6BQ"/>
+                                                </connections>
                                             </tableViewCell>
                                         </prototypes>
                                         <connections>
